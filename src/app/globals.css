@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+/* Import fonts (Poppins, Inter, Unna) */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:wght@400;500;600;700&family=Unna&display=swap'); */
+
+/* Default font for all elements */
+* {
+  font-family: 'Inter', sans-serif;
+}
+:root{
+  --secondary:#311807;
+  --primary:#FFB729;
+}
+h1,h2,h3,h4{
+  font-family: 'Poppins',sans-serif !important;
+  color: var(--secondary);
+}
+
+/* Carousel customization */
+.carousel .control-dots {
+  bottom: 10px;
+}
+
+.carousel .control-dots .dot {
+  background: #aaa;
+  box-shadow: none;
+  margin: 0 8px;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.carousel .control-dots .dot.selected {
+  background: #311807;
+  opacity: 1;
+  padding: 0 20px !important;
+  border-radius: 8px;
+}
+.gradient-text {
+    
+    
+      background: linear-gradient(45deg, #FFB729 10%, #996E19 100%) !important;
+      -webkit-background-clip: text !important; 
+      -webkit-text-fill-color: transparent;
+      /* for Firefox */
+      background-clip: text !important;
+      color: transparent !important;
+    }
