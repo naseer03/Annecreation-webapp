@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Alert } from '@mui/material';
+import { TextField, Button, Box, Alert, Typography } from '@mui/material';
 import { useAuthStore } from '@/Store/authStore';
 
 const MyProfile = () => {
@@ -162,25 +162,29 @@ const MyProfile = () => {
         {/* Email (read-only) */}
         <Box>
           <label htmlFor="email" className="text-sm text-[var(--secondary)] font-medium">
-            Email <span className="text-red-500">*</span>
+            Email :
+            {/* <span className="text-red-500">*</span> */}
           </label>
-          <TextField
+          {/* <TextField
             id="email"
             name="email"
             value={formData.email}
             fullWidth
             size="small"
             sx={inputStyle}
-            InputProps={{ readOnly: true }}
-          />
+          /> */}
+          <Typography variant="body1" component="span">
+            {formData.email}
+          </Typography>
         </Box>
 
         {/* Phone Number */}
         <Box>
           <label htmlFor="phone" className="text-sm text-[var(--secondary)] font-medium">
-            Phone Number <span className="text-red-500">*</span>
+            Phone Number :
+            {/* <span className="text-red-500">*</span> */}
           </label>
-          <TextField
+          {/* <TextField
             id="phone"
             name="phone"
             value={formData.phone}
@@ -188,7 +192,10 @@ const MyProfile = () => {
             fullWidth
             size="small"
             sx={inputStyle}
-          />
+          /> */}
+          <Typography variant="body1" component="span">
+            {formData.phone}
+          </Typography>
         </Box>
 
         {/* Submit Button */}

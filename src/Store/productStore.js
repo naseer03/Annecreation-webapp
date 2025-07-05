@@ -5,13 +5,15 @@ import { API_URL } from './authStore';
 export const useproductStore = create((set, get) => ({
   products: [],
   productDetail: null,
+  isProductsLoading: false,
+  isProductsPriceLoading: false,
   productsWithPrice: [], // ✅ ADD THIS
-  loading: false,
+  isProductDetailLoading: false,
   error: null,
 
   // Fetch all base products
   fetchProducts: async (params = {}) => {
-    set({ loading: true, error: null });
+    set({ isProductsLoading: true, error: null });
     try {
       const query = new URLSearchParams(params).toString();
       const url = `${API_URL}/api/products${query ? '?' + query : ''}`;
@@ -19,15 +21,15 @@ export const useproductStore = create((set, get) => ({
         withCredentials: true,
         headers: { Accept: 'application/json' },
       });
-      set({ products: res.data.products, loading: false });
+      set({ products: res.data.products, isProductsLoading: false });
     } catch (err) {
-      set({ error: 'Failed to load products', loading: false });
+      set({ error: 'Failed to load products', isProductsLoading: false });
     }
   },
 
   // Fetch single product by ID
   fetchProductById: async (product_id, params = {}) => {
-    set({ loading: true, error: null });
+    set({ isProductDetailLoading: true, error: null });
     try {
       const query = new URLSearchParams(params).toString();
       const url = `${API_URL}/api/products/${product_id}/${query ? '?' + query : ''}`;
@@ -35,14 +37,15 @@ export const useproductStore = create((set, get) => ({
         withCredentials: true,
         headers: { Accept: 'application/json' },
       });
-      set({ productDetail: res.data, loading: false });
+      set({ productDetail: res.data, isProductDetailLoading: false });
     } catch (err) {
-      set({ error: 'Failed to load product', loading: false });
+      set({ error: 'Failed to load product', isProductDetailLoading: false });
     }
   },
 
   // ✅ Enriched product fetcher that stores result in productsWithPrice
   fetchProductWithPriceById: async (product_id) => {
+  set({ isProductsPriceLoading: true });
   try {
     const url = `${API_URL}/api/products/${product_id}/with-price`;
     const res = await axios.get(url, {
@@ -65,6 +68,8 @@ export const useproductStore = create((set, get) => ({
   } catch (err) {
     console.error('Failed to fetch product with price:', err);
     return null;
+  } finally {
+    set({ isProductsPriceLoading: false });
   }
 },
 

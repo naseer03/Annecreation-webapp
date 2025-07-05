@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['a6dc-122-175-61-73.ngrok-free.app'], 
-  },
+    remotePatterns: [new URL('http://89.116.32.45:5999/**')],
+  }
 };
 
 export default nextConfig;

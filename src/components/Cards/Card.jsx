@@ -127,94 +127,95 @@ const ArrivalCard = ({ item }) => {
           m: 1,
         }}
       >
-        {/* Image wrapper */}
-        <Box
-          sx={{
-            position: 'relative',
-            width: `${CARD_WIDTH}px`,
-            height: `${IMAGE_HEIGHT}px`,
+        <Link
+          href={{
+            pathname: `/product/${item.product_id}`,
+            query: { manufacturer: item.manufacturer_id },
           }}
+          passHref
         >
-          {item.image ? (
-            <Image
-              src={`${API_URL}/${item.image}`}
-              alt={item.design || 'Product image'}
-              fill
-              sizes={`${CARD_WIDTH}px`}
-              style={{ objectFit: 'cover' }}
-            />
-          ) : (
-            <Box
-              sx={{
-                width: `${CARD_WIDTH}px`,
-                height: `${IMAGE_HEIGHT}px`,
-                backgroundColor: '#eee',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '0.875rem',
-                color: '#999',
-              }}
-            >
-              No Image Available
-            </Box>
-          )}
-
-          {/* Hover Overlay */}
+          {/* Image wrapper */}
           <Box
             sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              bgcolor: 'rgba(0,0,0,0.4)',
-              opacity: hover ? 1 : 0,
-              transition: 'opacity 0.3s ease',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-              zIndex: 2,
+              position: 'relative',
+              width: `${CARD_WIDTH}px`,
+              height: `${IMAGE_HEIGHT}px`,
+              backgroundColor: 'black'
             }}
           >
-            {/* Top Right Icons */}
-            <Box className="flex m-2 flex-col items-end gap-2">
-              <IconButton
-                onClick={() => handleAddToWishlist()}
-                disabled={loading}
+
+            {item.image ? (
+              <Image
+                src={`${API_URL}/${item.image}`}
+                alt={item.design || 'Product image'}
+                layout='fill'
+                objectFit='contain'
+              />
+            ) : (
+              <Box
                 sx={{
-                  backgroundColor: 'var(--primary)',
-                  '&:hover': {
-                    backgroundColor: 'var(--secondary)',
-                    color: 'var(--primary)',
-                  },
+                  width: `${CARD_WIDTH}px`,
+                  height: `${IMAGE_HEIGHT}px`,
+                  backgroundColor: '#eee',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.875rem',
+                  color: '#999',
                 }}
               >
-                {liked ? <FaHeart size={18} color="white" /> : <FaRegHeart size={18} />}
-              </IconButton>
+                No Image Available
+              </Box>
+            )}
 
-              <IconButton
-                onClick={handleViewClick}
-                sx={{
-                  backgroundColor: 'var(--primary)',
-                  '&:hover': {
-                    backgroundColor: 'var(--secondary)',
-                    color: 'var(--primary)',
-                  },
-                }}
-              >
-                <FaEye size={18} color="white" />
-              </IconButton>
-            </Box>
-
-            {/* View Details Button */}
-            <Link
-              href={{
-                pathname: `/product/${item.product_id}`,
-                query: { manufacturer: item.manufacturer_id },
+            {/* Hover Overlay */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                bgcolor: 'rgba(0,0,0,0.4)',
+                opacity: hover ? 1 : 0,
+                transition: 'opacity 0.3s ease',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                zIndex: 2,
               }}
-              passHref
             >
+              {/* Top Right Icons */}
+              <Box className="flex m-2 flex-col items-end gap-2">
+                <IconButton
+                  onClick={() => handleAddToWishlist()}
+                  disabled={loading}
+                  sx={{
+                    backgroundColor: 'var(--primary)',
+                    '&:hover': {
+                      backgroundColor: 'var(--secondary)',
+                      color: 'var(--primary)',
+                    },
+                  }}
+                >
+                  {liked ? <FaHeart size={18} color="white" /> : <FaRegHeart size={18} />}
+                </IconButton>
+
+                <IconButton
+                  onClick={handleViewClick}
+                  sx={{
+                    backgroundColor: 'var(--primary)',
+                    '&:hover': {
+                      backgroundColor: 'var(--secondary)',
+                      color: 'var(--primary)',
+                    },
+                  }}
+                >
+                  <FaEye size={18} color="white" />
+                </IconButton>
+              </Box>
+
+              {/* View Details Button */}
               <Button
                 fullWidth
                 onClick={(e) => e.stopPropagation()}
@@ -233,43 +234,44 @@ const ArrivalCard = ({ item }) => {
               >
                 View Details
               </Button>
-            </Link>
+            </Box>
           </Box>
-        </Box>
 
-        {/* Card Content */}
-        <CardContent sx={{ px: 1.5, py: 1 }}>
-          <Box display="flex" justifyContent="space-between" alignItems="center" gap={1}>
-            <Typography
-              variant="body2"
-              fontWeight={600}
-              fontSize={16}
-              sx={{ flex: 1, minWidth: 0 }}
-            >
-              {item.model}
-            </Typography>
+          {/* Card Content */}
+          <CardContent sx={{ px: 1.5, py: 1 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center" gap={1}>
+              <Typography
+                variant="body2"
+                fontWeight={600}
+                fontSize={16}
+                sx={{ flex: 1, minWidth: 0 }}
+              >
+                {item.model}
+              </Typography>
 
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              noWrap
-              sx={{ flexShrink: 0 }}
-            >
-              {item.design}
-            </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                noWrap
+                sx={{ flexShrink: 0 }}
+              >
+                {item.design}
+              </Typography>
+              
+              <Typography
+                variant="subtitle2"
+                fontWeight={700}
+                fontSize={16}
+                color="text.primary"
+                noWrap
+                sx={{ flexShrink: 0 }}
+              >
+                {item.price && <span className="gradient-text">₹{item.price}</span> }
+              </Typography>
+            </Box>
+          </CardContent>
 
-            <Typography
-              variant="subtitle2"
-              fontWeight={700}
-              fontSize={16}
-              color="text.primary"
-              noWrap
-              sx={{ flexShrink: 0 }}
-            >
-              <span className="gradient-text">₹{item.price}</span>
-            </Typography>
-          </Box>
-        </CardContent>
+        </Link>
       </Card>
 
       {/* Login Modal */}

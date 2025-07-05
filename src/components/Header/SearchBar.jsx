@@ -13,6 +13,8 @@ import { FiSearch } from 'react-icons/fi';
 import { useSearchStore } from '@/Store/SearchStore'; // Adjust path as needed
 import { useRouter } from 'next/navigation'; // For App Router
 import Link from 'next/link';
+import { API_URL } from '@/Store/authStore';
+import Image from 'next/image';
 
 const SearchWrapper = styled('div')(() => ({
   display: 'flex',
@@ -82,10 +84,23 @@ const SearchBar = () => {
               suggestionClicked.current = false; // reset after
             }, 150);
           }}
-          fullWidth
+          sx={{
+            paddingInlineEnd: '28px'
+          }}
           inputProps={{ 'aria-label': 'search product' }}
         />
-        {loading && <CircularProgress size={18} style={{ marginLeft: 8 }} />}
+        {loading &&
+          <div style={
+            {
+              position: 'absolute',
+              right: '8px',
+              display: 'inline-flex',
+              alignItems: 'center'
+            }
+          }>
+            <CircularProgress size={18} style={{ marginLeft: 8 }} />
+          </div>
+        }
       </SearchWrapper>
 
       {showSuggestions && matchingProducts.length > 0 && (
@@ -98,13 +113,21 @@ const SearchBar = () => {
                 component={Link}
                 href={`/product/${product.product_id}`}
                 onMouseDown={() => {
-                  
                   suggestionClicked.current = true;
                 }}
-               
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}
               >
-                <ListItemText primary={product.model} />
+                <div style={{position: 'relative', width: '120px', height: '60px'}}>
+                  {product.image && (
+                    <Image
+                      src={`${API_URL}/${product.image}`}
+                      alt={product.name || 'Product image'}
+                      layout='fill'
+                      objectFit='cover'
+                    />
+                  )}
+                </div>
+                  <ListItemText primary={product.model} />
               </ListItem>
             ))}
           </List>

@@ -16,7 +16,7 @@ const ProductPage = () => {
   const {
     productDetail,
     fetchProductById,
-    loading,
+    isProductDetailLoading,
     error,
   } = useproductStore();
 
@@ -26,7 +26,7 @@ const ProductPage = () => {
     }
   }, [productId]);
 
-  if (loading) return <Container className='my-20'><ProductSkeleton /></Container>;
+  if (isProductDetailLoading) return <Container className='my-20'><ProductSkeleton /></Container>;
   if (error) return <div>Error: {error}</div>;
   if (!productDetail) return <Container className='my-20'><ProductSkeleton /></Container>;
 

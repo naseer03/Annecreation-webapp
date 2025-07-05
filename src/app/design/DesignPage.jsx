@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { Container, Pagination } from '@mui/material';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Container } from '@mui/material';
 import BreadCrum from '@/components/BreadCrum/BreadCrum';
 import { usecategoryStore } from '@/Store/categoryStore';
 import { useproductStore } from '@/Store/productStore';
@@ -16,6 +16,9 @@ export default function DesignPage() {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(null);
+
+  const fetchingRef = useRef(false); 
 
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get('category');
@@ -25,7 +28,8 @@ export default function DesignPage() {
     fetchCategoryProducts,
     category,
     products,
-    isLoading,
+    isCategoriesLoading,
+    isProductsLoading,
     error,
   } = usecategoryStore();
 
@@ -35,8 +39,28 @@ export default function DesignPage() {
     resetProductsWithPrice,
   } = useproductStore();
 
+  const handleScrollCheck = () => {
+      if (isCategoriesLoading || fetchingRef.current) return;
+
+      // If we have total and already loaded all records, stop
+      if (total !== null && productsWithPrice.length >= total) return;
+
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.documentElement.scrollHeight;
+
+      const scrollPosition = scrollTop + windowHeight;
+      const threshold = fullHeight * 0.5;
+
+      if (scrollPosition >= threshold) {
+        fetchingRef.current = true;
+        setPage(prev => prev + 1);
+      }
+    };
+
   // Fetch categories once
   useEffect(() => {
+    resetProductsWithPrice();
     fetchCategories();
   }, []);
 
@@ -58,6 +82,7 @@ export default function DesignPage() {
     }
   }, [categoryFromUrl, category]);
 
+
   // Fetch category products when ID/page/sort changes
   useEffect(() => {
     if (selectedCategoryId) {
@@ -68,15 +93,15 @@ export default function DesignPage() {
   // Enrich fetched products with price
   useEffect(() => {
     const enrichProducts = async () => {
-      resetProductsWithPrice();
-
       if (products?.products?.length) {
         for (const item of products.products) {
           await fetchProductWithPriceById(item.product_id);
         }
+        fetchingRef.current = false;
+        handleScrollCheck()
       }
     };
-
+    setTotal(products?.pagination?.total)
     enrichProducts();
   }, [products]);
 
@@ -86,17 +111,21 @@ export default function DesignPage() {
     setSelectedCategory(category[index].name);
     setSelectedCategoryId(category[index].category_id);
     setPage(1);
+    resetProductsWithPrice();
   };
 
-  const handlePageChange = (event, value) => {
-    setPage(value);
-  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      handleScrollCheck()
+    }
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isCategoriesLoading, productsWithPrice.length, total]);
 
   const currentCategoryName = products?.category?.name || selectedCategory;
-  const totalProducts = products?.pagination?.total || 0;
-  const currentPage = products?.pagination?.page || 1;
-  const totalPages = products?.pagination?.pages || 1;
- 
+
   return (
     <>
       <BreadCrum
@@ -118,7 +147,7 @@ export default function DesignPage() {
               categories={categoryNames}
               activeTab={activeTab}
               onChange={handleTabChange}
-              isLoading={isLoading}
+              isLoading={isCategoriesLoading}
             />
           </aside>
 
@@ -126,7 +155,7 @@ export default function DesignPage() {
           <section className="w-full md:w-3/4 bg-white/10 rounded-lg p-4 md:p-6">
             <div className="flex flex-col sm:flex-row justify-between mb-6 gap-3">
               <p className="text-sm text-gray-700">
-                Showing {totalProducts} designs
+                Showing {total} designs
               </p>
               <SortSelect sortOption={sortOption} onChange={setSortOption} />
             </div>
@@ -138,12 +167,13 @@ export default function DesignPage() {
             {/* Product Grid */}
             <DesignList
               products={productsWithPrice}
-              isLoading={isLoading}
+              isLoading={isProductsLoading}
               error={error}
             />
 
+
             {/* Pagination */}
-            {totalPages > 1 && (
+            {/* {totalPages > 1 && (
               <div className="flex justify-center mt-6">
                 <Pagination
                   count={totalPages}
@@ -154,7 +184,7 @@ export default function DesignPage() {
                   shape="rounded"
                 />
               </div>
-            )}
+            )} */}
           </section>
         </div>
       </Container>

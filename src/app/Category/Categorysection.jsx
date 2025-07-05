@@ -8,7 +8,7 @@ import { usecategoryStore } from '@/Store/categoryStore';
 
 const Categorysection = () => {
   const [mounted, setMounted] = useState(false);
-  const { category, fetchCategories, isLoading } = usecategoryStore();
+  const { category, fetchCategories, isCategoriesLoading } = usecategoryStore();
  
   useEffect(() => {
     setMounted(true);
@@ -41,7 +41,7 @@ const Categorysection = () => {
       </h2>
 
       <div className="relative mb-10 px-4 sm:px-6 md:px-8">
-        {mounted && !isLoading && category.length > 0 ? (
+        {mounted && !isCategoriesLoading && category.length > 0 ? (
           <>
             <div ref={sliderRef} className="keen-slider">
               {category.map((item) => (

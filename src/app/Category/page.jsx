@@ -7,7 +7,7 @@ import { usecategoryStore } from '@/Store/categoryStore'
 import Loading from '@/components/categoryCard/Loading'
 
 const Page = () => {
-  const { category, fetchCategories, isLoading, error } = usecategoryStore()
+  const { category, fetchCategories, isCategoriesLoading, error } = usecategoryStore()
 
   useEffect(() => {
     fetchCategories()
@@ -15,7 +15,7 @@ const Page = () => {
 
   let content
 
-  if (isLoading) {
+  if (isCategoriesLoading) {
     content = (
       <div className="flex justify-center">
         <Loading count={10} />

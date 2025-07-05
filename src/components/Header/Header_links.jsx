@@ -8,6 +8,7 @@ import MobileDrawer from './MobileDrawer'
 import SearchBar from './SearchBar'
 import ProfileMenu from './ProfileMenu'
 import Logo from './Logo'
+import Link from 'next/link'
 
 const Header_links = () => {
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -30,7 +31,7 @@ const Header_links = () => {
     <AppBar position="static" sx={{ bgcolor: '#fff', color: '#333', boxShadow: 'none'}}>
       <Toolbar sx={{ justifyContent: 'space-between', px: '0 !important' }}>
         <Box display="flex" alignItems="center" gap={3}>
-          <Logo />
+          <Link href="/"><Logo /></Link>
           <Box display={{ xs: 'none', lg: 'flex' }} gap={3}>
             <DesktopNav />
           </Box>

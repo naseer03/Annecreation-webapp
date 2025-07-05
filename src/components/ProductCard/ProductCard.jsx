@@ -17,15 +17,15 @@ import useWishlistStore from '@/Store/wishlistStore';
 import { API_URL, useAuthStore } from '@/Store/authStore';
 import LoginForm from '@/app/Auth/Login/LoginForm';
 import { useRouter } from 'next/navigation';
+import FullImageView from './FullImageView';
 
 const ProductCard = ({ item }) => {
   const data = { ...item };
-  const [position, setPosition] = useState({ x: 50, y: 50 });
-  const [hover, setHover] = useState(false);
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const [addonError, setAddonError] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const router = useRouter();
   const containerRef = useRef(null);
@@ -150,13 +150,8 @@ const ProductCard = ({ item }) => {
           {/* Left: Image */}
           <div
             ref={containerRef}
-            onMouseMove={handleMouseMove}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => {
-              setHover(false);
-              setPosition({ x: 50, y: 50 });
-            }}
-            className="w-[30%] flex justify-center overflow-hidden rounded-md relative cursor-zoom-in"
+            onClick={() => setOpen(true)}
+            className="w-[30%] flex justify-center overflow-hidden rounded-md relative cursor-pointer"
           >
             <Image
               src={`${API_URL}/${item.image}`}
@@ -164,10 +159,8 @@ const ProductCard = ({ item }) => {
               width={300}
               height={300}
               style={{
-                transform: hover
-                  ? `scale(4) translate(${50 - position.x}%, ${50 - position.y}%)`
-                  : 'scale(1)',
-                transition: 'transform 0.2s ease-out',
+                userSelect: 'none',
+                WebkitUserDrag: 'none'
               }}
             />
           </div>
@@ -262,6 +255,13 @@ const ProductCard = ({ item }) => {
           </div>
         </div>
       </div>
+
+      {open && <FullImageView
+        open={open}
+        onClose={() => setOpen(false)}
+        src={`${API_URL}/${item.image}`}
+        alt={data.design || 'Design Image'}
+      />}
 
       {/* Login Modal */}
       <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
