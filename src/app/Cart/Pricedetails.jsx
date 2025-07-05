@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-
+import PropTypes from 'prop-types';
 const PriceDetails = ({ subtotal, itemsCount }) => {
   return (
     <div className="w-full md:w-[28%]">
@@ -26,6 +26,11 @@ const PriceDetails = ({ subtotal, itemsCount }) => {
 </div>
 
   );
+};
+
+PriceDetails.propTypes = {
+  subtotal: PropTypes.number.isRequired,
+  itemsCount: PropTypes.number.isRequired,
 };
 
 export default PriceDetails;

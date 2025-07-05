@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import axiosClient from '@/lib/axiosClient';
-import { useAuthStore } from './authStore';
+
 
 export const useDownloadsStore = create((set, get) => ({
   isLoading: false,
@@ -8,7 +8,7 @@ export const useDownloadsStore = create((set, get) => ({
   downloadLinks: {},
 
   fetchDownloadLink: async ( productId, optionValueId) => {
-    const key = `${productId}_${optionValueId || 'none'}`;
+
 
     try {
       const res = await axiosClient.get(

@@ -10,6 +10,7 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
+import PropTypes from 'prop-types';
 import { useAuthStore } from '@/Store/authStore';
 import { useRouter } from 'next/navigation';
 
@@ -81,7 +82,7 @@ const LoginForm = ({ redirectOnSuccess = false }) => {
       if (redirectOnSuccess) {
         router.push('/');
       } else {
-        setTimeout(() => setSuccessMessage(''), 3000);
+        setTimeout(() => setSuccessMessage(''), 0);
       }
     } else {
       const errMsg = error?.toLowerCase() || '';
@@ -204,5 +205,7 @@ const LoginForm = ({ redirectOnSuccess = false }) => {
     </Box>
   );
 };
-
+LoginForm.propTypes = {
+  redirectOnSuccess: PropTypes.bool,
+};
 export default LoginForm;

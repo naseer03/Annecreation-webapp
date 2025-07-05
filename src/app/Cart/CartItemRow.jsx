@@ -5,21 +5,21 @@ import { TableCell, TableRow, Box } from '@mui/material';
 import Image from 'next/image';
 import useCartStore from '@/Store/cartStore';
 import { API_URL } from '@/Store/authStore';
+import PropTypes from 'prop-types';
+
 
 const CartItemRow = ({ item }) => {
   const removeFromCart = useCartStore((state) => state.removeFromCart);
-
-
   
   return (
     <TableRow>
       {/* Image Cell */}
       <TableCell>
         <Box display="flex" alignItems="center" gap={2}>
-          {item?.image ? (
+          {item.image ? (
             <Image
               src={`${API_URL}/${item.image}`}
-              alt={item?.model || 'Product image'}
+              alt={item.model || 'Product image'}
               width={150}
               height={100}
             />
@@ -41,7 +41,7 @@ const CartItemRow = ({ item }) => {
       {/* Product Info */}
       <TableCell>
         <p className="text-md text-[var(--secondary)] font-semibold">
-          {item.name || item.code}
+          {item.name }
         </p>
    
 
@@ -72,6 +72,24 @@ const CartItemRow = ({ item }) => {
       </TableCell>
     </TableRow>
   );
+};
+CartItemRow.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    name: PropTypes.string.isRequired,
+    model: PropTypes.string,
+    image: PropTypes.string,
+    options: PropTypes.arrayOf(
+      PropTypes.shape({
+        option_value_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        option_value_name: PropTypes.string.isRequired,
+      })
+    ),
+    final_price: PropTypes.number,
+    discount: PropTypes.number,
+    subtotal: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 export default CartItemRow;

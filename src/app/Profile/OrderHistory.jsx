@@ -97,41 +97,43 @@ const OrderHistory = () => {
               {/* Products Info */}
               <div className="flex-1 border-r-2 border-black pr-6 flex items-center">
                 <ul className="space-y-2 w-full">
-                  {order.products?.map((product, index) => {
-                    const imageUrl = getProductImage(product.product_id);
+  {order.products?.map((product) => {
+    const imageUrl = getProductImage(product.product_id);
+    const productKey = `${order.order_id}-${product.product_id}`;
 
-                    return (
-                      <li key={index} className="flex gap-4 items-center">
-                        <div className="w-[90px] h-[90px] border rounded overflow-hidden flex-shrink-0 relative">
-                          {imageUrl ? (
-                            <Image
-                              src={`${API_URL}/${imageUrl}`}
-                              alt={product.name || 'Product Image'}
-                              fill
-                              className="object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-sm text-gray-400 bg-gray-100">
-                              No Image
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 space-y-1">
-                          <div className="flex justify-between">
-                            <span className="font-semibold text-[var(--secondary)]">Name</span>
-                            <span className="text-[var(--secondary)]">{product.name || 'N/A'}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="font-semibold text-[var(--secondary)]">Price</span>
-                            <span className="font-bold text-[var(--primary)]">
-                              ₹{product.price?.toFixed(2) || '0.00'}
-                            </span>
-                          </div>
-                        </div>
-                      </li>
-                    );
-                  }) || <li>No products</li>}
-                </ul>
+    return (
+      <li key={productKey} className="flex gap-4 items-center">
+        <div className="w-[90px] h-[90px] border rounded overflow-hidden flex-shrink-0 relative">
+          {imageUrl ? (
+            <Image
+              src={`${API_URL}/${imageUrl}`}
+              alt={product.name || 'Product Image'}
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-sm text-gray-400 bg-gray-100">
+              No Image
+            </div>
+          )}
+        </div>
+        <div className="flex-1 space-y-1">
+          <div className="flex justify-between">
+            <span className="font-semibold text-[var(--secondary)]">Name</span>
+            <span className="text-[var(--secondary)]">{product.name || 'N/A'}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="font-semibold text-[var(--secondary)]">Price</span>
+            <span className="font-bold text-[var(--primary)]">
+              ₹{product.price?.toFixed(2) || '0.00'}
+            </span>
+          </div>
+        </div>
+      </li>
+    );
+  })}
+</ul>
+
               </div>
 
               {/* Order Info */}

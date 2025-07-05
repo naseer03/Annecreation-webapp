@@ -1,9 +1,9 @@
 import React from "react";
 import { Container } from "@mui/material";
 import ArrivalCard from "@/components/Cards/Card";
-import { usecategoryStore } from "@/Store/categoryStore";
 
-const RelatedProductsSection = () => (
+
+const RelatedProductsSection = (products) => (
   <Container className='my-20'>
     <h3 className='text-center text-2xl font-semibold text-[var(--secondary)] my-16'>
       Related Products

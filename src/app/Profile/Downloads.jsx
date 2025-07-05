@@ -37,7 +37,7 @@ const Downloads = () => {
   useEffect(() => {
     fetchOrders(page, limit);
   }, [page]);
-console.log(downloadLinks)
+
   useEffect(() => {
     const fetchData = async () => {
       for (const order of orders) {
@@ -123,45 +123,47 @@ console.log(downloadLinks)
                 {/* Product Info */}
                 <div className="flex-1 border-r-2 border-black pr-6">
                   <ul className="space-y-4">
-                    {order.products?.map((product, index) => {
-                      const imageUrl = getProductImage(product.product_id);
+  {order.products?.map((product) => {
+    const imageUrl = getProductImage(product.product_id);
+    const key = `${order.order_id}-${product.product_id}`;
 
-                      return (
-                        <li key={index} className="pb-2">
-                          <div className="flex items-center gap-4">
-                            <div className="w-[90px] h-[90px] relative border rounded overflow-hidden flex-shrink-0">
-                              {imageUrl ? (
-                                <Image
-                                  src={`${API_URL}/${imageUrl}`}
-                                  alt={product.name || 'Product Image'}
-                                  fill
-                                  className="object-cover"
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center text-sm text-gray-400 bg-gray-100">
-                                  No Image
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex-1 space-y-1">
-                              <div className="flex justify-between my-1">
-                                <span className="font-semibold text-[var(--secondary)]">Name</span>
-                                <span className="text-[var(--secondary)]">
-                                  {product.name || 'N/A'}
-                                </span>
-                              </div>
-                              <div className="flex justify-between my-1">
-                                <span className="font-semibold text-[var(--secondary)]">Price</span>
-                                <span className="font-bold text-[var(--primary)]">
-                                  ₹{product.price?.toFixed(2) || '0.00'}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </li>
-                      );
-                    })}
-                  </ul>
+    return (
+      <li key={key} className="pb-2">
+        <div className="flex items-center gap-4">
+          <div className="w-[90px] h-[90px] relative border rounded overflow-hidden flex-shrink-0">
+            {imageUrl ? (
+              <Image
+                src={`${API_URL}/${imageUrl}`}
+                alt={product.name || 'Product Image'}
+                fill
+                className="object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-sm text-gray-400 bg-gray-100">
+                No Image
+              </div>
+            )}
+          </div>
+          <div className="flex-1 space-y-1">
+            <div className="flex justify-between my-1">
+              <span className="font-semibold text-[var(--secondary)]">Name</span>
+              <span className="text-[var(--secondary)]">
+                {product.name || 'N/A'}
+              </span>
+            </div>
+            <div className="flex justify-between my-1">
+              <span className="font-semibold text-[var(--secondary)]">Price</span>
+              <span className="font-bold text-[var(--primary)]">
+                ₹{product.price?.toFixed(2) || '0.00'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </li>
+    );
+  })}
+</ul>
+
                 </div>
 
                 {/* Order Info */}

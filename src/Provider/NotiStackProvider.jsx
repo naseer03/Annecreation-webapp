@@ -1,6 +1,7 @@
 'use client';
 
 import { SnackbarProvider } from 'notistack';
+import PropTypes from 'prop-types';
 
 export const NotistackProvider = ({ children }) => {
   return (
@@ -13,4 +14,9 @@ export const NotistackProvider = ({ children }) => {
       {children}
     </SnackbarProvider>
   );
+};
+
+// ✅ Props validation
+NotistackProvider.propTypes = {
+  children: PropTypes.node.isRequired,
 };

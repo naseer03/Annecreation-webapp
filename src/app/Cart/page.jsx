@@ -66,7 +66,9 @@ const CartPage = () => {
                 p: 2,
                 boxShadow: 3,
                 width: { xs: '100%', md: '70%' },
-                mt: 4,
+               border:'2px solid var(--primary)',
+               borderTop:'none',
+               borderRadius:'none'
               }}
             >
               <CartActions onContinue={() => router.push('/')} />

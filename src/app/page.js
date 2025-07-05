@@ -8,7 +8,7 @@ import Image from 'next/image';
 import img1 from '../../public/assets/home-img.png';
 import img2 from '../../public/assets/home-img1.png';
 import { Container } from '@mui/material';
-import { SnackbarProvider } from 'notistack';
+
 const Page = () => {
   const list = [
     { id: 1, text: 'Exclusive Embroidery Designs: Special offer!' },
@@ -39,7 +39,7 @@ const Page = () => {
               key={idx}
               className="inline-flex items-center gap-2 text-md min-w-max"
             >
-              <FaStar color="#311807" size={16} />
+              <FaStar color="var(--secondary)" size={16} />
               {item.text}
             </span>
           ))}

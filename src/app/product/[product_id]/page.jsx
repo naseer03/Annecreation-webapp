@@ -7,7 +7,7 @@ import ProductCard from '@/components/ProductCard/ProductCard';
 import { Container } from '@mui/material';
 import ArrivalCard from '@/components/Cards/Card';
 import ProductSkeleton from '@/components/ProductCard/ProductSkeleton';
-import DesignList from '@/app/design/DesginlIst';
+
 
 const ProductPage = () => {
   const { product_id } = useParams();

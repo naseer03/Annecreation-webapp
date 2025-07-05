@@ -1,7 +1,8 @@
 'use client';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Modal, Box, IconButton } from '@mui/material';
-import { LuX } from 'react-icons/lu'; // ✅ React Icon for Close
+import { LuX } from 'react-icons/lu';
 import ProductCard from '../ProductCard/ProductCard';
 
 const style = {
@@ -14,7 +15,6 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   borderRadius: 2,
-
 };
 
 const ProductPreviewModal = ({ open, onClose, product }) => {
@@ -23,13 +23,28 @@ const ProductPreviewModal = ({ open, onClose, product }) => {
       <Box sx={style}>
         <Box display="flex" justifyContent="flex-end">
           <IconButton onClick={onClose}>
-            <LuX size={24} /> {/* ✅ React Icon used here */}
+            <LuX size={24} />
           </IconButton>
         </Box>
         <ProductCard item={product} />
       </Box>
     </Modal>
   );
+};
+
+// ✅ PropTypes validation
+ProductPreviewModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  product: PropTypes.shape({
+    product_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
+    model: PropTypes.string,
+    design: PropTypes.string,
+    image: PropTypes.string,
+    price: PropTypes.number,
+    manufacturer_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }).isRequired,
 };
 
 export default ProductPreviewModal;

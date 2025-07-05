@@ -11,12 +11,11 @@ import {
   Card,
   CardContent,
 } from '@mui/material';
-
+import PropTypes from 'prop-types';
 import useCartStore from '@/Store/cartStore';
 import useWishlistStore from '@/Store/wishlistStore';
 import { API_URL, useAuthStore } from '@/Store/authStore';
 import LoginForm from '@/app/Auth/Login/LoginForm';
-import { useRouter } from 'next/navigation';
 import FullImageView from './FullImageView';
 
 const ProductCard = ({ item }) => {
@@ -26,8 +25,7 @@ const ProductCard = ({ item }) => {
   const [pendingAction, setPendingAction] = useState(null);
   const [addonError, setAddonError] = useState(false);
   const [open, setOpen] = useState(false);
-
-  const router = useRouter();
+ 
   const containerRef = useRef(null);
   const { enqueueSnackbar } = useSnackbar();
 
@@ -76,7 +74,7 @@ const ProductCard = ({ item }) => {
   };
 
   const handleAddonChange = (addon, checked) => {
-    setAddonError(false); // reset error on any change
+    setAddonError(false);
     setSelectedAddons((prev) =>
       checked
         ? [...prev, addon]
@@ -85,16 +83,16 @@ const ProductCard = ({ item }) => {
   };
 
   const addItemToCart = (afterLogin = false) => {
+    const hasOptions = Array.isArray(item.options) && item.options.length > 0;
+
     if (!accessToken && !afterLogin) {
       setPendingAction('cart');
       setModalOpen(true);
       return;
     }
 
-    const hasOptions = Array.isArray(item.options) && item.options.length > 0;
     if (hasOptions && selectedAddons.length === 0) {
       setAddonError(true);
-      
       return;
     }
 
@@ -113,7 +111,6 @@ const ProductCard = ({ item }) => {
 
     addToCart(itemWithAddons);
     enqueueSnackbar('Item added to cart!', { variant: 'success' });
-   
   };
 
   const addItemToWishlist = (afterLogin = false) => {
@@ -130,34 +127,30 @@ const ProductCard = ({ item }) => {
 
     addToWishlist(item);
     enqueueSnackbar('Added to wishlist!', { variant: 'success' });
-   
   };
 
   return (
     <>
       <div
-        style={{
-          boxShadow:
-            'rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px',
-        }}
-        className="bg-white rounded-lg my-10 px-6 py-8"
+        className="bg-white rounded-lg my-10 px-4 py-6 shadow-xl"
       >
-        <h1 className="text-center text-4xl font-semibold text-[var(--secondary)] mb-10">
+        <h1 className="text-center text-2xl sm:text-3xl md:text-4xl font-semibold text-[var(--secondary)] mb-8">
           {data.model || 'N/A'}
         </h1>
 
-        <div className="flex flex-col lg:flex-row gap-10">
+        <div className="flex flex-col lg:flex-row gap-8">
           {/* Left: Image */}
           <div
             ref={containerRef}
-            onClick={() => setOpen(true)}
-            className="w-[30%] flex justify-center overflow-hidden rounded-md relative cursor-pointer"
+             onClick={() => setOpen(true)}
+            className="w-full lg:w-1/3 flex justify-center overflow-hidden rounded-md relative cursor-pointer"
           >
             <Image
               src={`${API_URL}/${item.image}`}
               alt={data.design || 'Design Image'}
               width={300}
-              height={300}
+              height={200}
+              className="object-cover transition-transform duration-200 ease-out"
               style={{
                 userSelect: 'none',
                 WebkitUserDrag: 'none'
@@ -166,35 +159,36 @@ const ProductCard = ({ item }) => {
           </div>
 
           {/* Right: Info */}
-          <div className="flex w-[60%] flex-col gap-3 justify-between">
-            <div className="flex justify-between">
-              <div>
-                <p className="text-lg mb-4 flex items-center gap-3">
+          <div className="w-full lg:w-2/3 flex flex-col gap-5">
+            <div className="flex flex-col md:flex-row justify-between gap-4">
+              {/* Product Info */}
+              <div className="flex-1">
+                <p className="text-lg mb-3 flex items-center gap-3">
                   <span className="gradient-text">{data.sku || 'SKU N/A'}</span>
                   <button
                     onClick={() => handleShare(item?.sku || 'Design')}
-                    className="text-[var(--primary)] cursor-pointer hover:text-[#996E19] transition"
+                    className="text-[var(--primary)] hover:text-[#996E19] transition"
                     title="Share"
                   >
                     <FaShareAlt />
                   </button>
                 </p>
-                <ul className="space-y-3 text-md text-[var(--secondary)]">
-                  <li><span className="font-bold">Design Code:</span> {data.model}</li>
-                  <li><span className="font-bold">Stitches:</span> {item.upc}</li>
-                  <li><span className="font-bold">Area / Width / Height:</span> {item?.ean || 'N/A'}</li>
-                  <li><span className="font-bold">Color / Needles:</span> {item.jan}</li>
+                <ul className="space-y-2 text-sm md:text-md text-[var(--secondary)]">
+                  <li><strong>Design Code:</strong> {data.model}</li>
+                  <li><strong>Stitches:</strong> {item.upc}</li>
+                  <li><strong>Area / Width / Height:</strong> {item?.ean || 'N/A'}</li>
+                  <li><strong>Color / Needles:</strong> {item.jan}</li>
                 </ul>
               </div>
 
               {/* Add-ons */}
-              <div>
+              <div className="flex-1">
                 {item.options?.length > 0 ? (
                   <>
-                    <ul className="space-y-3">
+                    <ul className="space-y-2">
                       {item.options.map((option) =>
                         option.values.map((value) => (
-                          <li key={value.option_value_id} className="flex items-center gap-3">
+                          <li key={value.option_value_id} className="flex items-center gap-2 text-sm">
                             <input
                               type="checkbox"
                               id={`addon-${value.option_value_id}`}
@@ -208,13 +202,11 @@ const ProductCard = ({ item }) => {
                             />
                             <label
                               htmlFor={`addon-${value.option_value_id}`}
-                              className="flex-1 text-[var(--secondary)] text-sm sm:text-base"
+                              className="flex-1"
                             >
                               {value.name}
                             </label>
-                            <p className="text-[var(--secondary)] text-sm sm:text-base whitespace-nowrap">
-                              {value.price || 'Included'}
-                            </p>
+                            <span className="text-nowrap">{value.price || 'Included'}</span>
                           </li>
                         ))
                       )}
@@ -232,24 +224,24 @@ const ProductCard = ({ item }) => {
             </div>
 
             {/* Buttons */}
-            <div className="flex justify-between mt-2 flex-wrap">
-              <div className="w-1/2">
-                <button
-                  onClick={() => addItemToWishlist()}
-                  className="cursor-pointer font-semibold hover:bg-[var(--primary)] hover:text-white flex items-center justify-center gap-2 border-2 border-[var(--primary)] text-[var(--secondary)] px-4 py-2 rounded-md transition"
-                >
-                  <FaRegHeart />
-                  {alreadyInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
-                </button>
-              </div>
-              <div className="w-1/2">
-                <button
-                  onClick={() => addItemToCart()}
-                  className="ml-7 cursor-pointer flex items-center justify-center gap-2 bg-[var(--primary)] font-semibold hover:bg-white text-[var(--secondary)] hover:text-[var(--secondary)] border-2 border-[var(--primary)] px-5 py-2 rounded-md transition"
-                >
-                  <MdOutlineShoppingCart />
-                  Add to Cart
-                </button>
+            <div className="flex justify-around gap-4 mt-2">
+              <div className='w-1/2'>
+              <button
+                onClick={() => addItemToWishlist()}
+                className=" cursor-pointer font-semibold hover:bg-[var(--primary)] hover:text-white flex items-center justify-center gap-2 border-2 border-[var(--primary)] text-[var(--secondary)] px-4 py-2 rounded-md transition"
+              >
+                <FaRegHeart />
+                {alreadyInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
+              </button>
+</div>
+ <div className='w-1/2'>
+              <button
+                onClick={() => addItemToCart()}
+                className=" cursor-pointer  font-semibold bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--secondary)] border-2 border-[var(--primary)] flex items-center justify-center gap-2 px-4 py-2 rounded-md transition"
+              >
+                <MdOutlineShoppingCart />
+                Add to Cart
+              </button>
               </div>
             </div>
           </div>
@@ -268,6 +260,7 @@ const ProductCard = ({ item }) => {
         <Card
           sx={{
             width: '100%',
+            maxWidth: 420,
             boxShadow: '0px 0px 10px 0px #00000040',
             borderRadius: '12px',
           }}
@@ -303,6 +296,35 @@ const ProductCard = ({ item }) => {
       </Dialog>
     </>
   );
+};
+ProductCard.propTypes = {
+  item: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    product_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    model: PropTypes.string,
+    sku: PropTypes.string,
+    image: PropTypes.string,
+    design: PropTypes.string,
+    upc: PropTypes.string,
+    ean: PropTypes.string,
+    jan: PropTypes.string,
+    options: PropTypes.arrayOf(
+      PropTypes.shape({
+        option_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+          .isRequired,
+        values: PropTypes.arrayOf(
+          PropTypes.shape({
+            option_value_id: PropTypes.oneOfType([
+              PropTypes.string,
+              PropTypes.number,
+            ]).isRequired,
+            name: PropTypes.string.isRequired,
+            price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+          })
+        ).isRequired,
+      })
+    ),
+  }).isRequired,
 };
 
 export default ProductCard;

@@ -6,40 +6,45 @@ import BreadCrum from '@/components/BreadCrum/BreadCrum';
 import MyProfile from './MyProfile';
 import OrderHistory from './OrderHistory';
 import Downloads from './Downloads';
+import PropTypes from 'prop-types';
 
 // Tab panel component
-function TabPanel({ children, value, index }) {
+function TabPanel({ children, value, current }) {
   return (
-    <div hidden={value !== index} role="tabpanel">
-      {value === index && <div className="w-full">{children}</div>}
+    <div hidden={value !== current} role="tabpanel">
+      {value === current && <div className="w-full">{children}</div>}
     </div>
   );
 }
 
-// Mapping URL query to tab index
-const tabMap = {
-  profile: 0,
-  orders: 1,
-  downloads: 2,
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  value: PropTypes.string.isRequired,
+  current: PropTypes.string.isRequired,
 };
 
-// Main Account Tabs component
-export default function AccountTabs() {
-  const [tabIndex, setTabIndex] = useState(0);
+// Tab configuration (explicit, stable)
+const tabConfig = [
+  { label: 'My Profile', key: 'profile', component: <MyProfile /> },
+  { label: 'Order History', key: 'orders', component: <OrderHistory /> },
+  { label: 'Downloads', key: 'downloads', component: <Downloads /> },
+];
 
-  // Read URL param and set initial tab
+export default function AccountTabs() {
+  const [tabKey, setTabKey] = useState('profile');
+
+  // On load, set tab from URL query
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search);
       const tabParam = urlParams.get('tab');
-      if (tabParam && tabMap.hasOwnProperty(tabParam)) {
-        setTabIndex(tabMap[tabParam]);
-      }
+      const foundTab = tabConfig.find((tab) => tab.key === tabParam);
+      if (foundTab) setTabKey(foundTab.key);
     }
   }, []);
 
   const handleChange = (_, newValue) => {
-    setTabIndex(newValue);
+    setTabKey(newValue);
   };
 
   return (
@@ -65,17 +70,18 @@ export default function AccountTabs() {
                   ? 'horizontal'
                   : 'vertical'
               }
-              value={tabIndex}
+              value={tabKey}
               onChange={handleChange}
               variant="scrollable"
               sx={{
                 '.MuiTabs-indicator': { display: 'none' },
               }}
             >
-              {['My Profile', 'Order History', 'Downloads'].map((label, index) => (
+              {tabConfig.map((tab) => (
                 <Tab
-                  key={index}
-                  label={label}
+                  key={tab.key}
+                  label={tab.label}
+                  value={tab.key}
                   sx={{
                     textAlign: 'left',
                     color: '#000',
@@ -86,7 +92,6 @@ export default function AccountTabs() {
                       fontWeight: 'bold',
                     },
                   }}
-                  id={`vertical-tab-${index}`}
                 />
               ))}
             </Tabs>
@@ -94,15 +99,11 @@ export default function AccountTabs() {
 
           {/* Tab Content */}
           <div className="w-full">
-            <TabPanel value={tabIndex} index={0}>
-              <MyProfile />
-            </TabPanel>
-            <TabPanel value={tabIndex} index={1}>
-              <OrderHistory />
-            </TabPanel>
-            <TabPanel value={tabIndex} index={2}>
-              <Downloads />
-            </TabPanel>
+            {tabConfig.map((tab) => (
+              <TabPanel key={tab.key} value={tabKey} current={tab.key}>
+                {tab.component}
+              </TabPanel>
+            ))}
           </div>
         </div>
       </Container>

@@ -78,7 +78,7 @@ const RegisterForm = () => {
     const newErrors = {
       firstName: formData.firstName.trim() === '',
       lastName: formData.lastName.trim() === '',
-      email: !/^\S+@\S+\.\S+$/.test(formData.email),
+     email: !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email),
       phone: !/^\d{10,15}$/.test(formData.phone),
       password: formData.password.length < 6,
       confirmPassword: formData.confirmPassword !== formData.password,

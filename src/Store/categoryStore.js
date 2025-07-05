@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import axios from 'axios';
-import { useAuthStore, API_URL } from './authStore';
+import { API_URL } from './authStore';
 
 export const usecategoryStore = create((set) => ({
   category: [],

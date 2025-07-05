@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
-import { Tabs, Tab, Container, Box, CircularProgress } from '@mui/material';
+import {
+  Tabs,
+  Tab,
+  Container,
+  Box,
+  CircularProgress,
+} from '@mui/material';
 import BreadCrum from '@/components/BreadCrum/BreadCrum';
 import WishListCard from '@/components/WishListCard/WishListCard';
 
@@ -13,74 +19,81 @@ import { useproductStore } from '@/Store/productStore';
 const Wishlist = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-
-  // Zustand selectors
-  const wishlist = useWishlistStore((state) => state.wishlist);
-  const getWishlistItem = useWishlistStore((state) => state.getWishlistItem);
-
-  const fetchCategories = usecategoryStore((state) => state.fetchCategories);
-  const category = usecategoryStore((state) => state.category);
-
+  const { wishlist, getWishlistItem } = useWishlistStore();
+  const { fetchCategories, category } = usecategoryStore();
   const accessToken = useAuthStore((state) => state.accessToken);
+  const { fetchProductWithPriceById, productsWithPrice, resetProductsWithPrice } = useproductStore();
 
-  const fetchProductWithPriceById = useproductStore((state) => state.fetchProductWithPriceById);
-  const productsWithPrice = useproductStore((state) => state.productsWithPrice);
-  const resetProductsWithPrice = useproductStore((state) => state.resetProductsWithPrice);
-
-  // Fetch wishlist and categories
   useEffect(() => {
-    const fetchAll = async () => {
+    const fetchInitial = async () => {
       if (!accessToken) return;
-
       setIsLoading(true);
       await Promise.all([fetchCategories(), getWishlistItem()]);
     };
-
-    fetchAll();
+    fetchInitial();
   }, [accessToken]);
 
-  // Fetch product details from wishlist
   useEffect(() => {
     const fetchProductDetails = async () => {
+      resetProductsWithPrice();
+
       if (!wishlist || wishlist.length === 0) {
         setIsLoading(false);
         return;
       }
 
-      resetProductsWithPrice();
-
       await Promise.all(
-        wishlist.map(async (item) => {
-          const product = await fetchProductWithPriceById(item.product_id);
-          if (product) {
-            product.product_id = item.product_id; // Ensure consistent ID
-          }
-        })
+        wishlist.map((item) => fetchProductWithPriceById(item.product_id))
       );
 
       setIsLoading(false);
     };
 
-    if (accessToken && wishlist.length > 0) {
+    if (accessToken) {
       fetchProductDetails();
-    } else if (accessToken) {
-      setIsLoading(false);
     }
   }, [wishlist, accessToken]);
 
-  const subcategories = useMemo(() => ['All', ...new Set(category.map((cat) => cat.name))], [category]);
+  const subcategories = useMemo(
+    () => ['All', ...new Set(category.map((cat) => cat.name))],
+    [category]
+  );
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
   const filteredWishlist = useMemo(() => {
+    if (!wishlist || wishlist.length === 0) return [];
     if (activeTab === 0) return productsWithPrice;
+
     const selectedCategory = subcategories[activeTab]?.toLowerCase();
     return productsWithPrice.filter(
       (item) => item.category?.toLowerCase() === selectedCategory
     );
-  }, [productsWithPrice, activeTab, subcategories]);
+  }, [wishlist, productsWithPrice, activeTab, subcategories]);
+
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="flex justify-center items-center h-full py-10">
+          <CircularProgress color="warning" />
+        </div>
+      );
+    }
+
+    if (wishlist.length === 0) {
+      return <p className="text-center text-gray-500">Your wishlist is empty.</p>;
+    }
+
+    if (filteredWishlist.length > 0) {
+      return filteredWishlist.map((item) => (
+        <WishListCard key={item.product_id} item={item} />
+      ));
+    }
+
+    return <p className="text-center text-gray-500">No items found in this category.</p>;
+  };
 
   return (
     <>
@@ -134,26 +147,14 @@ const Wishlist = () => {
                 }}
               >
                 {subcategories.map((categoryName, index) => (
-                  <Tab key={index} label={categoryName} />
+                  <Tab key={categoryName} label={categoryName} />
                 ))}
               </Tabs>
             </div>
 
             {/* Wishlist Content */}
             <div className="w-full md:w-3/4 bg-white/10 rounded-lg p-4 md:p-6 text-[var(--secondary)]">
-              {isLoading ? (
-                <div className="flex justify-center items-center h-full py-10">
-                  <CircularProgress color="warning" />
-                </div>
-              ) : filteredWishlist?.length > 0 ? (
-                filteredWishlist.map((item) => (
-                  <WishListCard key={item.product_id} item={item} />
-                ))
-              ) : (
-                <p className="text-center text-gray-500">
-                  No items in this category.
-                </p>
-              )}
+              {renderContent()}
             </div>
           </div>
         )}

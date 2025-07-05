@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent } from '@mui/material';
@@ -18,8 +19,8 @@ const WishListCard = ({ item }) => {
   };
 
   const handleRemove = async () => {
-    await removeFromWishlist(item.product_id || item.id); // ✅ remove from wishlist state + API
-    removeProductWithPriceById(item.product_id || item.id); // ✅ remove from UI list
+    await removeFromWishlist(item.product_id);
+    removeProductWithPriceById(item.product_id);
   };
 
   return (
@@ -80,6 +81,18 @@ const WishListCard = ({ item }) => {
       </CardContent>
     </Card>
   );
+};
+
+// ✅ PropTypes validation
+WishListCard.propTypes = {
+  item: PropTypes.shape({
+    product_id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+      .isRequired,
+    image: PropTypes.string,
+    design: PropTypes.string,
+    model: PropTypes.string,
+    price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  }).isRequired,
 };
 
 export default WishListCard;

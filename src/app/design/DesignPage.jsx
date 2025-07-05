@@ -125,7 +125,7 @@ export default function DesignPage() {
   }, [isCategoriesLoading, productsWithPrice.length, total]);
 
   const currentCategoryName = products?.category?.name || selectedCategory;
-
+ 
   return (
     <>
       <BreadCrum
@@ -152,7 +152,7 @@ export default function DesignPage() {
           </aside>
 
           {/* Main Section */}
-          <section className="w-full md:w-3/4 bg-white/10 rounded-lg p-4 md:p-6">
+          <section className="w-full md:w-3/4 bg-white/10 rounded-lg ">
             <div className="flex flex-col sm:flex-row justify-between mb-6 gap-3">
               <p className="text-sm text-gray-700">
                 Showing {total} designs
@@ -171,20 +171,7 @@ export default function DesignPage() {
               error={error}
             />
 
-
-            {/* Pagination */}
-            {/* {totalPages > 1 && (
-              <div className="flex justify-center mt-6">
-                <Pagination
-                  count={totalPages}
-                  page={currentPage}
-                  onChange={handlePageChange}
-                  color="primary"
-                  variant="outlined"
-                  shape="rounded"
-                />
-              </div>
-            )} */}
+       
           </section>
         </div>
       </Container>

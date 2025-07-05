@@ -13,8 +13,6 @@ import { FiSearch } from 'react-icons/fi';
 import { useSearchStore } from '@/Store/SearchStore'; // Adjust path as needed
 import { useRouter } from 'next/navigation'; // For App Router
 import Link from 'next/link';
-import { API_URL } from '@/Store/authStore';
-import Image from 'next/image';
 
 const SearchWrapper = styled('div')(() => ({
   display: 'flex',
@@ -112,9 +110,6 @@ const SearchBar = () => {
                 button="true"
                 component={Link}
                 href={`/product/${product.product_id}`}
-                onMouseDown={() => {
-                  suggestionClicked.current = true;
-                }}
                 style={{ cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}
               >
                 <div style={{position: 'relative', width: '120px', height: '60px'}}>
@@ -127,7 +122,7 @@ const SearchBar = () => {
                     />
                   )}
                 </div>
-                  <ListItemText primary={product.model} />
+                <ListItemText primary={product.model} />
               </ListItem>
             ))}
           </List>

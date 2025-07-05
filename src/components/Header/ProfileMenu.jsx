@@ -27,17 +27,15 @@ const ProfileMenu = ({ anchorEl, handleClick, handleClose }) => {
   const cartCount = useCartStore((state) => state.cart?.items_count || 0);
   const wishlistCount = useWishlistStore((state) => state.wishlist?.length || 0);
 
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Hydrate from localStorage
+  // Hydration-safe accessToken setup
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('accessToken');
-      if (token && !accessToken) {
-        setAccessToken(token);
-      }
-      setIsHydrated(true);
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    if (token && !accessToken) {
+      setAccessToken(token);
     }
+    setMounted(true);
   }, [accessToken, setAccessToken]);
 
   const handleLogout = () => {
@@ -59,11 +57,11 @@ const ProfileMenu = ({ anchorEl, handleClick, handleClose }) => {
     },
   };
 
-const authMenuItems = [
-  { label: 'My Profile', path: '/Profile?tab=profile' },
-  { label: 'Downloads', path: '/Profile?tab=downloads' },
-  { label: 'Order History', path: '/Profile?tab=orders' },
-];
+  const authMenuItems = [
+    { label: 'My Profile', path: '/Profile?tab=profile' },
+    { label: 'Order History', path: '/Profile?tab=orders' },
+    { label: 'Downloads', path: '/Profile?tab=downloads' },
+  ];
 
   const guestMenuItems = [
     { label: 'Login', path: '/Auth/Login' },
@@ -139,33 +137,38 @@ const authMenuItems = [
         sx={iconHoverStyle}
         aria-label="wishlist"
       >
-        <Badge
-          badgeContent={isAuthenticated && isHydrated ? wishlistCount : 0}
-          color="primary"
-          sx={badgeSx}
-        >
-          <FaRegHeart
-            size={26}
-            color={pathname === '/WishList' ? 'var(--primary)' : 'var(--secondary)'}
-          />
-        </Badge>
+        {mounted && (
+          <Badge
+            badgeContent={isAuthenticated ? wishlistCount : 0}
+            color="primary"
+            sx={badgeSx}
+          >
+            <FaRegHeart
+              size={26}
+              color={pathname === '/WishList' ? 'var(--primary)' : 'var(--secondary)'}
+            />
+          </Badge>
+        )}
       </IconButton>
 
+      {/* Cart Icon */}
       <IconButton
         onClick={() => router.push('/Cart')}
-        sx={iconHoverStyle}
+        sx={{ ...iconHoverStyle, pr: 0 }}
         aria-label="cart"
       >
-        <Badge
-          badgeContent={isAuthenticated && isHydrated ? cartCount : 0}
-          color="primary"
-          sx={badgeSx}
-        >
-          <MdOutlineShoppingCart
-            size={26}
-            color={pathname === '/Cart' ? 'var(--primary)' : 'var(--secondary)'}
-          />
-        </Badge>
+        {mounted && (
+          <Badge
+            badgeContent={isAuthenticated ? cartCount : 0}
+            color="primary"
+            sx={badgeSx}
+          >
+            <MdOutlineShoppingCart
+              size={26}
+              color={pathname === '/Cart' ? 'var(--primary)' : 'var(--secondary)'}
+            />
+          </Badge>
+        )}
       </IconButton>
     </>
   );
