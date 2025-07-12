@@ -7,6 +7,10 @@ import MyProfile from './MyProfile';
 import OrderHistory from './OrderHistory';
 import Downloads from './Downloads';
 import PropTypes from 'prop-types';
+import ChangePassword from './ChangePassword';
+import { useSearchParams } from 'next/navigation';
+import { getTitleCase } from '@/lib/helpers';
+import { useRouter } from 'next/navigation';
 
 // Tab panel component
 function TabPanel({ children, value, current }) {
@@ -26,25 +30,25 @@ TabPanel.propTypes = {
 // Tab configuration (explicit, stable)
 const tabConfig = [
   { label: 'My Profile', key: 'profile', component: <MyProfile /> },
+  { label: 'Change Password', key: 'changePassword', component: <ChangePassword /> },
   { label: 'Order History', key: 'orders', component: <OrderHistory /> },
   { label: 'Downloads', key: 'downloads', component: <Downloads /> },
 ];
 
 export default function AccountTabs() {
   const [tabKey, setTabKey] = useState('profile');
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   // On load, set tab from URL query
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search);
-      const tabParam = urlParams.get('tab');
+      const tabParam = searchParams.get('tab');
       const foundTab = tabConfig.find((tab) => tab.key === tabParam);
       if (foundTab) setTabKey(foundTab.key);
-    }
-  }, []);
+  }, [searchParams]);
 
   const handleChange = (_, newValue) => {
-    setTabKey(newValue);
+    router.push(`/Profile?tab=${newValue}`)
   };
 
   return (
@@ -52,14 +56,14 @@ export default function AccountTabs() {
       <BreadCrum
         crumbs={[
           { label: 'Home', href: '/' },
-          { label: 'Profile', href: '/Profile' },
+          { label: getTitleCase(tabKey), href: `/Profile?tab=${tabKey}`},
         ]}
       />
 
       <Container className="my-20">
         <div className="flex flex-col lg:flex-row w-full gap-0">
           {/* Sidebar Tabs */}
-          <div className="w-full h-[220px] lg:w-1/4 border-2 border-[var(--primary)] rounded-md">
+          <div className="w-full h-fit lg:w-1/4 border-2 border-[var(--primary)] rounded-md">
             <p className="border-b-2 border-[var(--primary)] text-center text-transparent bg-clip-text bg-[linear-gradient(to_left,_#996E19_10%,_var(--primary))] font-bold py-3">
               Account
             </p>

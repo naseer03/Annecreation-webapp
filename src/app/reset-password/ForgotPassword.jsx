@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Alert, Box, Button, TextField } from '@mui/material';
 import { useAuthStore } from '@/Store/authStore';
 import { useSearchParams } from 'next/navigation';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const ForgotPassword = () => {
     const searchParams = useSearchParams();

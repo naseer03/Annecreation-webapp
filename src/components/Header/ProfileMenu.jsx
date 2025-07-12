@@ -59,6 +59,7 @@ const ProfileMenu = ({ anchorEl, handleClick, handleClose }) => {
 
   const authMenuItems = [
     { label: 'My Profile', path: '/Profile?tab=profile' },
+    { label: 'Change Password', path: '/Profile?tab=changePassword' },
     { label: 'Order History', path: '/Profile?tab=orders' },
     { label: 'Downloads', path: '/Profile?tab=downloads' },
   ];

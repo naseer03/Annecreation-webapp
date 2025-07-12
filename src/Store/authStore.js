@@ -17,6 +17,7 @@ export const useAuthStore = create(
       isResetPasswordLoading: null,
       resetPasswordError: null,
       resetPasswordSuccess: false,
+      changePasswordSuccess: false,
 
       setAccessToken: (token) => set({ accessToken: token }),
 
@@ -124,7 +125,7 @@ export const useAuthStore = create(
       },
 
       changePassword: async (passwordData) => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null, changePasswordSuccess: false });
 
         try {
           await axiosClient.post(
@@ -132,7 +133,7 @@ export const useAuthStore = create(
             passwordData
           );
 
-          set({ isLoading: false });
+          set({ isLoading: false, changePasswordSuccess: true });
 
           return { success: true };
         } catch (error) {
