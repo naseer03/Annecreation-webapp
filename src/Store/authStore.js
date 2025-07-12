@@ -1,10 +1,9 @@
+"use client";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import axiosClient from "@/lib/axiosClient";
 
-'use client';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import axiosClient from '@/lib/axiosClient'; 
-
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 export const useAuthStore = create(
   persist(
@@ -15,13 +14,16 @@ export const useAuthStore = create(
       isAuthenticated: false,
       isLoading: false,
       error: null,
+      isResetPasswordLoading: null,
+      resetPasswordError: null,
+      resetPasswordSuccess: false,
 
       setAccessToken: (token) => set({ accessToken: token }),
 
       login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
-          const { data } = await axiosClient.post('/api/customers/login', {
+          const { data } = await axiosClient.post("/api/customers/login", {
             email,
             password,
           });
@@ -54,7 +56,10 @@ export const useAuthStore = create(
       register: async (formData) => {
         set({ isLoading: true, error: null });
         try {
-          const { data } = await axiosClient.post('/api/customers/register',formData );
+          const { data } = await axiosClient.post(
+            "/api/customers/register",
+            formData
+          );
 
           set({
             user: data.customer,
@@ -95,7 +100,10 @@ export const useAuthStore = create(
         set({ isLoading: true, error: null });
 
         try {
-          const { data } = await axiosClient.put('/api/customers/profile', profileData);
+          const { data } = await axiosClient.put(
+            "/api/customers/profile",
+            profileData
+          );
 
           set({
             user: { ...get().user, ...data.customer },
@@ -119,7 +127,10 @@ export const useAuthStore = create(
         set({ isLoading: true, error: null });
 
         try {
-          await axiosClient.post('/api/customers/change-password', passwordData);
+          await axiosClient.post(
+            "/api/customers/change-password",
+            passwordData
+          );
 
           set({ isLoading: false });
 
@@ -140,7 +151,7 @@ export const useAuthStore = create(
         set({ isLoading: true, error: null });
 
         try {
-          const { data } = await axiosClient.get('/api/customers/profile');
+          const { data } = await axiosClient.get("/api/customers/profile");
 
           set({
             user: data,
@@ -160,10 +171,31 @@ export const useAuthStore = create(
         }
       },
 
-      clearError: () => set({ error: null }),
+      resetPassword: async (passwordData) => {
+        set({ isResetPasswordLoading: true, resetPasswordError: null, resetPasswordSuccess: false });
+
+        try {
+          await axiosClient.post("/api/customers/reset-password", passwordData);
+
+          set({ isResetPasswordLoading: false , resetPasswordSuccess: true});
+
+          return { success: true };
+        } catch (error) {
+          const errorMsg =
+            error?.response?.data?.message ||
+            error?.response?.data?.error ||
+            error.message;
+
+          set({ isResetPasswordLoading: false, resetPasswordError: errorMsg });
+
+          return { isResetPasswordLoading: false, resetPasswordError: errorMsg, resetPasswordSuccess: false };
+        }
+      },
+
+      clearError: () => set({ error: null, resetPasswordError: null }),
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
       partialize: (state) => ({
         user: state.user,
         accessToken: state.accessToken,
