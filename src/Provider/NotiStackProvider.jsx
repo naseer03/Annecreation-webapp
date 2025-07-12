@@ -1,6 +1,6 @@
 'use client';
 
-import { SnackbarProvider } from 'notistack';
+import { SnackbarProvider, closeSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 
 export const NotistackProvider = ({ children }) => {
@@ -10,6 +10,11 @@ export const NotistackProvider = ({ children }) => {
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       autoHideDuration={3000}
       preventDuplicate
+      action={(snackbarId) => (
+        <button onClick={() => closeSnackbar(snackbarId)} className="cursor-pointer hover:underline" >
+          Dismiss
+        </button>
+      )}
     >
       {children}
     </SnackbarProvider>

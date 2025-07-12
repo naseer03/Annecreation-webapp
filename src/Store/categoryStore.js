@@ -24,7 +24,7 @@ export const usecategoryStore = create((set) => ({
       });
 
       set({
-        category: response.data.categories,
+        category: response.data.categories.filter(item => item.name),
         isCategoriesLoading: false,
       });
     } catch (error) {
