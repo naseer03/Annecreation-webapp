@@ -192,33 +192,24 @@ const ArrivalCard = ({ item }) => {
               </IconButton>
             </Box>
 
-            {/* View Details Button */}
-            <Link
-              href={{
-                pathname: `/product/${item.product_id}`,
-                query: { manufacturer: item.manufacturer_id },
+            <Button
+              fullWidth
+              onClick={(e) => e.stopPropagation()}
+              sx={{
+                bgcolor: 'var(--primary)',
+                color: 'var(--secondary)',
+                fontWeight: 600,
+                fontSize: 16,
+                py: 1,
+                borderRadius: 0,
+                textTransform: 'none',
+                '&:hover': {
+                  bgcolor: '#e6a521',
+                },
               }}
-              passHref
             >
-              <Button
-                fullWidth
-                onClick={(e) => e.stopPropagation()}
-                sx={{
-                  bgcolor: 'var(--primary)',
-                  color: 'var(--secondary)',
-                  fontWeight: 600,
-                  fontSize: 16,
-                  py: 1,
-                  borderRadius: 0,
-                  textTransform: 'none',
-                  '&:hover': {
-                    bgcolor: '#e6a521',
-                  },
-                }}
-              >
-                View Details
-              </Button>
-            </Link>
+              View Details
+            </Button>
           </Box>
         </Box>
 
